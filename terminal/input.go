@@ -1,8 +1,10 @@
 package terminal
 
 import (
+	"bufio"
 	"database/sql"
 	"fmt"
+	"os"
 	"shop/db"
 	"shop/models"
 )
@@ -26,14 +28,21 @@ func InputSeller(DB *sql.DB) error {
 
 func InputProduct(DB *sql.DB) error {
 	var product models.Product
-	fmt.Println("Input data:")
+	cin := bufio.NewScanner(os.Stdin)
+	fmt.Println("Input name:")
+	cin.Scan()
+	product.Name = cin.Text()
+	if err := cin.Err(); err != nil {
 
-	_, err := fmt.Scan(&product.Name, &product.Price, &product.SellerID)
-	if err != nil {
 		return err
 	}
 
-	err = db.CreateProduct(DB, product)
+	fmt.Println("Input price:")
+	fmt.Scanln(&product.Price)
+	fmt.Println("Input seller ID:")
+	fmt.Scanln(&product.SellerID)
+
+	err := db.CreateProduct(DB, product)
 	if err != nil {
 		return err
 	}
