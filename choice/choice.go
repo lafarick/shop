@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"shop/db"
+	"shop/serverHello"
+	"shop/serverInc"
 	"shop/terminal"
 )
 
@@ -16,7 +18,9 @@ L:
 		fmt.Println("2 for output all sellers,")
 		fmt.Println("3 for input new product,")
 		fmt.Println("4 for output specific seller`s products.")
-		fmt.Println("5 for exit the program.")
+		fmt.Println("5 for start Hello server;")
+		fmt.Println("6 for start Increment server;")
+		fmt.Println("7 for exit.")
 		fmt.Scan(&num)
 		switch num {
 		case 1:
@@ -43,8 +47,11 @@ L:
 				panic(err)
 			}
 			terminal.PrintProducts(database, getProduct)
-		}
-		if num == 5 {
+		case 5:
+			serverHello.ConnectHello()
+		case 6:
+			serverInc.ConnectInc()
+		case 7:
 			break L
 		}
 
