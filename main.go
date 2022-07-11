@@ -3,9 +3,11 @@ package main
 import (
 	"shop/choice"
 	"shop/db"
+	"shop/serverHello"
 )
 
 func main() {
+	go serverHello.ConnectHello()
 	database, err := db.Connect()
 	if err != nil {
 		panic(err)
