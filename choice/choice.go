@@ -25,6 +25,8 @@ L:
 				panic(err)
 			}
 		case 2:
+			//fmt.Println("Input the numbe:")
+			//fmt.Scan(&ID)
 			getSeller, err := db.GetSellers(database)
 			if err != nil {
 				panic(err)
