@@ -19,3 +19,15 @@ func PrintProducts(DB *sql.DB, products []models.Product) {
 		fmt.Println(product.ID, product.Name, product.Price, product.SellerID)
 	}
 }
+
+func PrintCustomers(DB *sql.DB, customers []models.Customer) {
+	for _, customer := range customers {
+		fmt.Println(customer.ID, customer.Name, customer.LastName, customer.Email)
+	}
+}
+
+func PrintOrders(DB *sql.DB, orders []models.Order) {
+	for _, order := range orders {
+		fmt.Println(order.ID, order.CustomerID, order.ProductID, order.Quantity)
+	}
+}

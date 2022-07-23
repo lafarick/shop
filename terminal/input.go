@@ -49,3 +49,35 @@ func InputProduct(DB *sql.DB) error {
 
 	return nil
 }
+
+func InputCustomer(DB *sql.DB) error {
+	var customer models.Customer
+	fmt.Println("Input data:")
+
+	_, err := fmt.Scan(&customer.Name, &customer.LastName, &customer.Email)
+	if err != nil {
+		return err
+	}
+
+	err = db.CreateCustomer(DB, customer)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func InputOrder(DB *sql.DB) error {
+	var order models.Order
+	fmt.Println("Input data:")
+
+	_, err := fmt.Scan(&order.CustomerID, &order.ProductID, &order.Quantity)
+	if err != nil {
+		return err
+	}
+
+	err = db.CreateOrder(DB, order)
+	if err != nil {
+		return err
+	}
+	return nil
+}

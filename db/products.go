@@ -13,11 +13,11 @@ func CreateProduct(db *sql.DB, inputProduct models.Product) error {
 	if err != nil {
 		return err
 	}
-	return err
+	return nil
 }
 
-func GetProducts(db *sql.DB, ID int) ([]models.Product, error) {
-	rows, err := db.Query("select* from products where seller_id=$1", &ID)
+func GetProducts(db *sql.DB) ([]models.Product, error) {
+	rows, err := db.Query("select* from products")
 	if err != nil {
 		return nil, err
 	}
@@ -38,3 +38,11 @@ func GetProducts(db *sql.DB, ID int) ([]models.Product, error) {
 	}
 	return products, nil
 }
+
+/*func UpdateProducts(db *sql.DB) error {
+	_, err := db.Exec("update products set price = $1 where id = $2", 1300, 5)
+	if err != nil {
+		return err
+	}
+	return nil
+}*/

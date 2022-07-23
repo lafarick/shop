@@ -26,6 +26,21 @@ func main() {
 		panic(err)
 	}*/
 
+	/*err = db.CreateTableCustomers(database)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err = db.CreateTableOrders(database)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err = db.UpdateProducts(database)
+	if err != nil {
+		panic(err)
+	}*/
+
 	choice.ChoiceOfAction(database)
 
 }
