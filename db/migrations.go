@@ -2,7 +2,7 @@ package db
 
 import "database/sql"
 
-func CreateTableSellers(db *sql.DB) error {
+func (c Connection) CreateTableSellers() error {
 	query := `
 		create table 
 		sellers( 
@@ -11,7 +11,7 @@ func CreateTableSellers(db *sql.DB) error {
 			last_name varchar not null, 
 			email varchar not null
 		)`
-	_, err := db.Exec(query)
+	_, err := c.DB.Exec(query)
 	if err != nil {
 		return err
 	}

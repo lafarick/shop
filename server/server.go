@@ -29,14 +29,14 @@ func ServerMain(handlers Handlers) {
 }
 
 func (h Handlers) SellerIn(w http.ResponseWriter, r *http.Request) {
-	b, err := io.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	seller := CreateSeller{}
-	err = json.Unmarshal(b, &seller)
+	err = json.Unmarshal(body, &seller)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -101,7 +101,10 @@ func (h Handlers) CustomerIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handlers) CustomersOut(w http.ResponseWriter, r *http.Request) {
-	Customer, err := db.GetCustomers(h.DB)
+	connect := db.Connection{
+		DB: h.DB,
+	}
+	Customer, err := db.Connection.GetCustomers(connect)
 	if err != nil {
 		fmt.Println(err)
 		return

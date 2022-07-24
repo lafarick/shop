@@ -15,8 +15,8 @@ func CreateCustomer(db *sql.DB, inputCustomer models.Customer) error {
 	return nil
 }
 
-func GetCustomers(db *sql.DB) ([]models.Customer, error) {
-	rows, err := db.Query("select * from customers")
+func (c Connection) GetCustomers() ([]models.Customer, error) {
+	rows, err := c.DB.Query("select * from customers")
 	if err != nil {
 		return nil, err
 	}

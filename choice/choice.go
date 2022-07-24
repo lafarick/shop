@@ -9,6 +9,9 @@ import (
 
 func ChoiceOfAction(database *sql.DB) {
 	var num int
+	connect := db.Connection{
+		DB: database,
+	}
 L:
 	for {
 		fmt.Println("Enter:")
@@ -53,7 +56,7 @@ L:
 				panic(err)
 			}
 		case 6:
-			getCustomers, err := db.GetCustomers(database)
+			getCustomers, err := db.Connection.GetCustomers(connect)
 			if err != nil {
 				panic(err)
 			}
