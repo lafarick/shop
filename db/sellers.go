@@ -1,13 +1,12 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"shop/models"
 )
 
-func CreateSeller(db *sql.DB, inputSeller models.Seller) error {
-	_, err := db.Exec("insert into sellers(name,last_name, email) values ( $1, $2, $3)",
+func (c Connection) CreateSeller(inputSeller models.Seller) error {
+	_, err := c.DB.Exec("insert into sellers(name,last_name, email) values ( $1, $2, $3)",
 		&inputSeller.Name, &inputSeller.LastName, &inputSeller.Email)
 	if err != nil {
 		return err
@@ -15,8 +14,8 @@ func CreateSeller(db *sql.DB, inputSeller models.Seller) error {
 	return err
 }
 
-func GetSellers(db *sql.DB) ([]models.Seller, error) {
-	rows, err := db.Query("select * from sellers")
+func (c Connection) GetSellers() ([]models.Seller, error) {
+	rows, err := c.DB.Query("select * from sellers")
 	if err != nil {
 		return nil, err
 	}

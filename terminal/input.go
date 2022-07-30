@@ -9,7 +9,14 @@ import (
 	"shop/models"
 )
 
-func InputSeller(DB *sql.DB) error {
+type Connection struct {
+	DB *sql.DB
+}
+
+func (c Connection) InputSeller() error {
+	connect := db.Connection{
+		DB: c.DB,
+	}
 	var seller models.Seller
 	fmt.Println("Input data:")
 
@@ -18,7 +25,7 @@ func InputSeller(DB *sql.DB) error {
 		return err
 	}
 
-	err = db.CreateSeller(DB, seller)
+	err = db.Connection.CreateSeller(connect, seller)
 	if err != nil {
 		return err
 	}
@@ -26,7 +33,29 @@ func InputSeller(DB *sql.DB) error {
 	return nil
 }
 
-func InputProduct(DB *sql.DB) error {
+func (c Connection) InputCustomer() error {
+	connect := db.Connection{
+		DB: c.DB,
+	}
+	var customer models.Customer
+	fmt.Println("Input data:")
+
+	_, err := fmt.Scan(&customer.Name, &customer.LastName, &customer.Email)
+	if err != nil {
+		return err
+	}
+
+	err = db.Connection.CreateCustomer(connect, customer)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c Connection) InputProduct() error {
+	connect := db.Connection{
+		DB: c.DB,
+	}
 	var product models.Product
 	cin := bufio.NewScanner(os.Stdin)
 	fmt.Println("Input name:")
@@ -42,7 +71,7 @@ func InputProduct(DB *sql.DB) error {
 	fmt.Println("Input seller ID:")
 	fmt.Scanln(&product.SellerID)
 
-	err := db.CreateProduct(DB, product)
+	err := db.Connection.CreateProduct(connect, product)
 	if err != nil {
 		return err
 	}
@@ -50,23 +79,10 @@ func InputProduct(DB *sql.DB) error {
 	return nil
 }
 
-func InputCustomer(DB *sql.DB) error {
-	var customer models.Customer
-	fmt.Println("Input data:")
-
-	_, err := fmt.Scan(&customer.Name, &customer.LastName, &customer.Email)
-	if err != nil {
-		return err
+func (c Connection) InputOrder() error {
+	connect := db.Connection{
+		DB: c.DB,
 	}
-
-	err = db.CreateCustomer(DB, customer)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func InputOrder(DB *sql.DB) error {
 	var order models.Order
 	fmt.Println("Input data:")
 
@@ -75,7 +91,7 @@ func InputOrder(DB *sql.DB) error {
 		return err
 	}
 
-	err = db.CreateOrder(DB, order)
+	err = db.Connection.CreateOrder(connect, order)
 	if err != nil {
 		return err
 	}

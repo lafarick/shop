@@ -29,6 +29,9 @@ func ServerMain(handlers Handlers) {
 }
 
 func (h Handlers) SellerIn(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -48,12 +51,15 @@ func (h Handlers) SellerIn(w http.ResponseWriter, r *http.Request) {
 		Email:    seller.Email,
 	}
 
-	db.CreateSeller(h.DB, InputSeller)
+	db.Connection.CreateSeller(connect, InputSeller)
 
 }
 
 func (h Handlers) SellersOut(w http.ResponseWriter, r *http.Request) {
-	Seller, err := db.GetSellers(h.DB)
+	connect := db.Connection{
+		DB: h.DB,
+	}
+	Seller, err := db.Connection.GetSellers(connect)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -78,6 +84,9 @@ func (h Handlers) SellersOut(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handlers) CustomerIn(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -97,7 +106,7 @@ func (h Handlers) CustomerIn(w http.ResponseWriter, r *http.Request) {
 		Email:    customer.Email,
 	}
 
-	db.CreateCustomer(h.DB, InputCustomer)
+	db.Connection.CreateCustomer(connect, InputCustomer)
 }
 
 func (h Handlers) CustomersOut(w http.ResponseWriter, r *http.Request) {
@@ -130,6 +139,9 @@ func (h Handlers) CustomersOut(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handlers) ProductIn(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -148,12 +160,14 @@ func (h Handlers) ProductIn(w http.ResponseWriter, r *http.Request) {
 		SellerID: product.SellerID,
 	}
 
-	db.CreateProduct(h.DB, InputProduct)
+	db.Connection.CreateProduct(connect, InputProduct)
 }
 
 func (h Handlers) ProductsOut(w http.ResponseWriter, r *http.Request) {
-
-	Product, err := db.GetProducts(h.DB)
+	connect := db.Connection{
+		DB: h.DB,
+	}
+	Product, err := db.Connection.GetProducts(connect)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -180,6 +194,9 @@ func (h Handlers) ProductsOut(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handlers) OrderIn(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -199,11 +216,14 @@ func (h Handlers) OrderIn(w http.ResponseWriter, r *http.Request) {
 		Quantity:   order.Quantity,
 	}
 
-	db.CreateOrder(h.DB, InputOrder)
+	db.Connection.CreateOrder(connect, InputOrder)
 }
 
 func (h Handlers) OrdersOut(w http.ResponseWriter, r *http.Request) {
-	Order, err := db.GetOrders(h.DB)
+	connect := db.Connection{
+		DB: h.DB,
+	}
+	Order, err := db.Connection.GetOrders(connect)
 	if err != nil {
 		fmt.Println(err)
 		return

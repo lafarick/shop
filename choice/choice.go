@@ -9,7 +9,10 @@ import (
 
 func ChoiceOfAction(database *sql.DB) {
 	var num int
-	connect := db.Connection{
+	connectOut := db.Connection{
+		DB: database,
+	}
+	connectIn := terminal.Connection{
 		DB: database,
 	}
 L:
@@ -27,47 +30,45 @@ L:
 		fmt.Scan(&num)
 		switch num {
 		case 1:
-			err := terminal.InputSeller(database)
+			err := terminal.Connection.InputSeller(connectIn)
 			if err != nil {
 				panic(err)
 			}
 		case 2:
-			//fmt.Println("Input the numbe:")
-			//fmt.Scan(&ID)
-			getSeller, err := db.GetSellers(database)
+			getSeller, err := db.Connection.GetSellers(connectOut)
 			if err != nil {
 				panic(err)
 			}
 			terminal.PrintSellers(database, getSeller)
 		case 3:
-			err := terminal.InputProduct(database)
+			err := terminal.Connection.InputProduct(connectIn)
 			if err != nil {
 				panic(err)
 			}
 		case 4:
-			getProduct, err := db.GetProducts(database)
+			getProduct, err := db.Connection.GetProducts(connectOut)
 			if err != nil {
 				panic(err)
 			}
 			terminal.PrintProducts(database, getProduct)
 		case 5:
-			err := terminal.InputCustomer(database)
+			err := terminal.Connection.InputCustomer(connectIn)
 			if err != nil {
 				panic(err)
 			}
 		case 6:
-			getCustomers, err := db.Connection.GetCustomers(connect)
+			getCustomers, err := db.Connection.GetCustomers(connectOut)
 			if err != nil {
 				panic(err)
 			}
 			terminal.PrintCustomers(database, getCustomers)
 		case 7:
-			err := terminal.InputOrder(database)
+			err := terminal.Connection.InputOrder(connectIn)
 			if err != nil {
 				panic(err)
 			}
 		case 8:
-			getOrders, err := db.GetOrders(database)
+			getOrders, err := db.Connection.GetOrders(connectOut)
 			if err != nil {
 				panic(err)
 			}
@@ -77,4 +78,5 @@ L:
 		}
 
 	}
+
 }

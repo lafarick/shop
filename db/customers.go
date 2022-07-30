@@ -1,13 +1,12 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"shop/models"
 )
 
-func CreateCustomer(db *sql.DB, inputCustomer models.Customer) error {
-	_, err := db.Exec("insert into customers(name, last_name, email) values ( $1, $2, $3)",
+func (c Connection) CreateCustomer(inputCustomer models.Customer) error {
+	_, err := c.DB.Exec("insert into customers(name, last_name, email) values ( $1, $2, $3)",
 		&inputCustomer.Name, &inputCustomer.LastName, &inputCustomer.Email)
 	if err != nil {
 		return err

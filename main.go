@@ -41,6 +41,11 @@ func main() {
 		panic(err)
 	}*/
 
+	/*err = db.UpdateOrders(database)
+	if err != nil {
+		panic(err)
+	}*/
+
 	choice.ChoiceOfAction(database)
 
 }
