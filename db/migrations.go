@@ -65,3 +65,31 @@ func CreateTableOrders(db *sql.DB) error {
 	}
 	return nil
 }
+
+func (c Connection) CreateTableOrdersData() error {
+	query := `
+	create table
+	orders_data(
+		id serial primary key,
+		order_id int references orders(id),
+		quantity int
+	)`
+	_, err := c.DB.Exec(query)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c Connection) CreateTableOrderID() error {
+	query := `
+	create table
+	order_id(
+		id int
+	)`
+	_, err := c.DB.Exec(query)
+	if err != nil {
+		return err
+	}
+	return nil
+}

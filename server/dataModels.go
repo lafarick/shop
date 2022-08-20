@@ -41,13 +41,16 @@ type GetCustomers struct {
 
 type CreateOrder struct {
 	CustomerID int `json:"customerId"`
-	ProductID  int `json:"productId"`
-	Quantity   int `json:"quantity"`
 }
 
 type GetOrders struct {
 	ID         int `json:"id"`
 	CustomerID int `json:"customerId"`
-	ProductID  int `json:"productId"`
-	Quantity   int `json:"quantity"`
+}
+
+type OrdersData struct {
+	OrderID   int    `json:"orderId"`
+	ProductID int    `json:"productId"`
+	Quantity  int    `json:"quantity"`
+	Date      string `json:"date"`
 }

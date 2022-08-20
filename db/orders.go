@@ -1,14 +1,14 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"shop/models"
 )
 
 func (c Connection) CreateOrder(inputOrder models.Order) error {
-	_, err := c.DB.Exec("insert into orders(customer_id, product_id, quantity) values ($1, $2, $3)",
-		&inputOrder.CustomerID, &inputOrder.ProductID, &inputOrder.Quantity)
+
+	_, err := c.DB.Exec("insert into orders(customer_id) values ($1)",
+		&inputOrder.CustomerID)
 	if err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func (c Connection) GetOrders() ([]models.Order, error) {
 
 	for rows.Next() {
 		order := models.Order{}
-		err := rows.Scan(&order.ID, &order.CustomerID, &order.ProductID, &order.Quantity)
+		err := rows.Scan(&order.ID, &order.CustomerID)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -38,8 +38,16 @@ func (c Connection) GetOrders() ([]models.Order, error) {
 	return orders, nil
 }
 
-func UpdateOrders(db *sql.DB) error {
-	_, err := db.Exec("update orders set id = $1 where id = $2", 4, 7)
+func (c Connection) UpdateOrders() error {
+	_, err := c.DB.Exec("update orders set id = $1 where id = $2", 6, 9)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c Connection) AlterOrders() error {
+	_, err := c.DB.Exec("alter table orders drop column quantity")
 	if err != nil {
 		return err
 	}

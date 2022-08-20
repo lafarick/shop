@@ -84,14 +84,49 @@ func (c Connection) InputOrder() error {
 		DB: c.DB,
 	}
 	var order models.Order
-	fmt.Println("Input data:")
-
-	_, err := fmt.Scan(&order.CustomerID, &order.ProductID, &order.Quantity)
+	fmt.Println("Input customer ID:")
+	_, err := fmt.Scanln(&order.CustomerID)
 	if err != nil {
 		return err
 	}
 
 	err = db.Connection.CreateOrder(connect, order)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c Connection) InputOrderData() error {
+	connect := db.Connection{
+		DB: c.DB,
+	}
+	var orderData models.OrderData
+	fmt.Println("Input order ID:")
+	_, err := fmt.Scanln(&orderData.OrderID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Input product ID:")
+	_, err = fmt.Scanln(&orderData.ProductID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Input quantity of product:")
+	_, err = fmt.Scanln(&orderData.Quantity)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Input date of order:")
+	_, err = fmt.Scanln(&orderData.Date)
+	if err != nil {
+		return err
+	}
+
+	err = db.Connection.CreateOrderData(connect, orderData)
 	if err != nil {
 		return err
 	}

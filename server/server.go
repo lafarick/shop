@@ -8,23 +8,30 @@ import (
 	"net/http"
 	"shop/db"
 	"shop/models"
+
+	"github.com/gorilla/mux"
 )
 
 type Handlers struct {
-	DB *sql.DB
+	Router *mux.Router
+	DB     *sql.DB
 }
 
 func ServerMain(handlers Handlers) {
-	http.HandleFunc("/in", handlers.SellerIn)
-	http.HandleFunc("/out", handlers.SellersOut)
-	http.HandleFunc("/productin", handlers.ProductIn)
-	http.HandleFunc("/productout", handlers.ProductsOut)
-	http.HandleFunc("/customerin", handlers.CustomerIn)
-	http.HandleFunc("/customersout", handlers.CustomersOut)
-	http.HandleFunc("/orderin", handlers.OrderIn)
-	http.HandleFunc("/ordersout", handlers.OrdersOut)
+	r := mux.NewRouter()
+	r.HandleFunc("/sellerin", handlers.SellerIn)
+	r.HandleFunc("/sellerout", handlers.SellersOut)
+	r.HandleFunc("/productin", handlers.ProductIn)
+	r.HandleFunc("/productout", handlers.ProductsOut)
+	r.HandleFunc("/customerin", handlers.CustomerIn)
+	r.HandleFunc("/customersout", handlers.CustomersOut)
+	r.HandleFunc("/orderin", handlers.OrderIn)
+	r.HandleFunc("/ordersout", handlers.OrdersOut)
+	r.HandleFunc("/orderdatain", handlers.OrderDataIn)
+	r.HandleFunc("/ordersdataout", handlers.OrdersDataOut)
+	r.HandleFunc("/getbyid/{id}", handlers.OrderByIDOut).Methods("GET")
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", r)
 
 }
 
@@ -212,8 +219,6 @@ func (h Handlers) OrderIn(w http.ResponseWriter, r *http.Request) {
 
 	InputOrder := models.Order{
 		CustomerID: order.CustomerID,
-		ProductID:  order.ProductID,
-		Quantity:   order.Quantity,
 	}
 
 	db.Connection.CreateOrder(connect, InputOrder)
@@ -234,8 +239,6 @@ func (h Handlers) OrdersOut(w http.ResponseWriter, r *http.Request) {
 		getO := GetOrders{
 			ID:         g.ID,
 			CustomerID: g.CustomerID,
-			ProductID:  g.ProductID,
-			Quantity:   g.Quantity,
 		}
 		getOrders = append(getOrders, getO)
 	}
@@ -246,4 +249,91 @@ func (h Handlers) OrdersOut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(getO)
+}
+
+func (h Handlers) OrderDataIn(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	orderData := OrdersData{}
+	err = json.Unmarshal(b, &orderData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	InputOrderData := models.OrderData{
+		OrderID:   orderData.OrderID,
+		Quantity:  orderData.Quantity,
+		ProductID: orderData.ProductID,
+		Date:      orderData.Date,
+	}
+
+	db.Connection.CreateOrderData(connect, InputOrderData)
+}
+
+func (h Handlers) OrdersDataOut(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
+	OrderData, err := db.Connection.GetOrdersData(connect)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	getOrdersData := []OrdersData{}
+	for _, g := range OrderData {
+		getOD := OrdersData{
+			OrderID:   g.OrderID,
+			Quantity:  g.Quantity,
+			ProductID: g.ProductID,
+			Date:      g.Date,
+		}
+		getOrdersData = append(getOrdersData, getOD)
+	}
+
+	getOD, err := json.Marshal(getOrdersData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Write(getOD)
+}
+
+func (h Handlers) OrderByIDOut(w http.ResponseWriter, r *http.Request) {
+	connect := db.Connection{
+		DB: h.DB,
+	}
+
+	var ID int
+	OrderData, err := db.Connection.GetOrderDataByID(connect, ID)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	getOrderData := []OrdersData{}
+	for _, g := range OrderData {
+		getOD := OrdersData{
+			OrderID:   g.OrderID,
+			Quantity:  g.Quantity,
+			ProductID: g.ProductID,
+			Date:      g.Date,
+		}
+		getOrderData = append(getOrderData, getOD)
+	}
+
+	getOD, err := json.Marshal(getOrderData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Write(getOD)
 }

@@ -12,9 +12,39 @@ func ChoiceOfAction(database *sql.DB) {
 	connectOut := db.Connection{
 		DB: database,
 	}
-	connectIn := terminal.Connection{
+	connect := terminal.Connection{
 		DB: database,
 	}
+
+	/*err := db.Connection.CreateTableOrdersData(connectOut)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err := db.Connection.CreateTableOrderID(connectOut)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err := db.Connection.AlterOrders(connectOut)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err := db.Connection.UpdateOrders(connectOut)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err := db.Connection.UpdateOrdersData(connectOut)
+	if err != nil {
+		panic(err)
+	}*/
+
+	/*err := db.Connection.AlterOrdersData(connectOut)
+	if err != nil {
+		panic(err)
+	}*/
 L:
 	for {
 		fmt.Println("Enter:")
@@ -26,11 +56,14 @@ L:
 		fmt.Println("6 for output all customers,")
 		fmt.Println("7 for input new order,")
 		fmt.Println("8 for output all oders,")
-		fmt.Println("9 for exit.")
+		fmt.Println("9 for input new order data,")
+		fmt.Println("10 for output all orders data,")
+		fmt.Println("11 for output one order data,")
+		fmt.Println("12 for exit.")
 		fmt.Scan(&num)
 		switch num {
 		case 1:
-			err := terminal.Connection.InputSeller(connectIn)
+			err := terminal.Connection.InputSeller(connect)
 			if err != nil {
 				panic(err)
 			}
@@ -41,7 +74,7 @@ L:
 			}
 			terminal.PrintSellers(database, getSeller)
 		case 3:
-			err := terminal.Connection.InputProduct(connectIn)
+			err := terminal.Connection.InputProduct(connect)
 			if err != nil {
 				panic(err)
 			}
@@ -52,7 +85,7 @@ L:
 			}
 			terminal.PrintProducts(database, getProduct)
 		case 5:
-			err := terminal.Connection.InputCustomer(connectIn)
+			err := terminal.Connection.InputCustomer(connect)
 			if err != nil {
 				panic(err)
 			}
@@ -63,7 +96,7 @@ L:
 			}
 			terminal.PrintCustomers(database, getCustomers)
 		case 7:
-			err := terminal.Connection.InputOrder(connectIn)
+			err := terminal.Connection.InputOrder(connect)
 			if err != nil {
 				panic(err)
 			}
@@ -74,6 +107,25 @@ L:
 			}
 			terminal.PrintOrders(database, getOrders)
 		case 9:
+			err := terminal.Connection.InputOrderData(connect)
+			if err != nil {
+				panic(err)
+			}
+		case 10:
+			getOrdersData, err := db.Connection.GetOrdersData(connectOut)
+			if err != nil {
+				panic(err)
+			}
+			terminal.Connection.PrintOrdersData(connect, getOrdersData)
+		case 11:
+			var orderID int
+			fmt.Scanln(&orderID)
+			getOrderData, err := db.Connection.GetOrderDataByID(connectOut, orderID)
+			if err != nil {
+				panic(err)
+			}
+			terminal.Connection.PrintOrdersData(connect, getOrderData)
+		case 12:
 			break L
 		}
 

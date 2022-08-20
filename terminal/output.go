@@ -28,6 +28,12 @@ func PrintCustomers(DB *sql.DB, customers []models.Customer) {
 
 func PrintOrders(DB *sql.DB, orders []models.Order) {
 	for _, order := range orders {
-		fmt.Println(order.ID, order.CustomerID, order.ProductID, order.Quantity)
+		fmt.Println(order.ID, order.CustomerID)
+	}
+}
+
+func (c Connection) PrintOrdersData(ordersData []models.OrderData) {
+	for _, orderData := range ordersData {
+		fmt.Println(orderData.OrderID, orderData.Quantity, orderData.ProductID, orderData.Date)
 	}
 }
