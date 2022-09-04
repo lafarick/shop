@@ -8,36 +8,34 @@ import (
 	"net/http"
 	"shop/db"
 	"shop/models"
-
-	"github.com/gorilla/mux"
+	"strconv"
+	"strings"
 )
 
-type Handlers struct {
-	Router *mux.Router
-	DB     *sql.DB
+type Connection struct {
+	DB *sql.DB
 }
 
-func ServerMain(handlers Handlers) {
-	r := mux.NewRouter()
-	r.HandleFunc("/sellerin", handlers.SellerIn)
-	r.HandleFunc("/sellerout", handlers.SellersOut)
-	r.HandleFunc("/productin", handlers.ProductIn)
-	r.HandleFunc("/productout", handlers.ProductsOut)
-	r.HandleFunc("/customerin", handlers.CustomerIn)
-	r.HandleFunc("/customersout", handlers.CustomersOut)
-	r.HandleFunc("/orderin", handlers.OrderIn)
-	r.HandleFunc("/ordersout", handlers.OrdersOut)
-	r.HandleFunc("/orderdatain", handlers.OrderDataIn)
-	r.HandleFunc("/ordersdataout", handlers.OrdersDataOut)
-	r.HandleFunc("/getbyid/{id}", handlers.OrderByIDOut).Methods("GET")
+func ServerMain(c Connection) {
+	http.HandleFunc("/sellerin", c.SellerIn)
+	http.HandleFunc("/sellerout", c.SellersOut)
+	http.HandleFunc("/productin", c.ProductIn)
+	http.HandleFunc("/productout", c.ProductsOut)
+	http.HandleFunc("/customerin", c.CustomerIn)
+	http.HandleFunc("/customersout", c.CustomersOut)
+	http.HandleFunc("/orderin", c.OrderIn)
+	http.HandleFunc("/ordersout", c.OrdersOut)
+	http.HandleFunc("/orderdatain", c.OrderDataIn)
+	http.HandleFunc("/ordersdataout", c.OrdersDataOut)
+	http.HandleFunc("/getbyid/{id}", c.OrderByIDOut)
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8080", nil)
 
 }
 
-func (h Handlers) SellerIn(w http.ResponseWriter, r *http.Request) {
+func (c Connection) SellerIn(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -62,9 +60,9 @@ func (h Handlers) SellerIn(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h Handlers) SellersOut(w http.ResponseWriter, r *http.Request) {
+func (c Connection) SellersOut(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	Seller, err := db.Connection.GetSellers(connect)
 	if err != nil {
@@ -90,9 +88,9 @@ func (h Handlers) SellersOut(w http.ResponseWriter, r *http.Request) {
 	w.Write(getS)
 }
 
-func (h Handlers) CustomerIn(w http.ResponseWriter, r *http.Request) {
+func (c Connection) CustomerIn(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -116,9 +114,9 @@ func (h Handlers) CustomerIn(w http.ResponseWriter, r *http.Request) {
 	db.Connection.CreateCustomer(connect, InputCustomer)
 }
 
-func (h Handlers) CustomersOut(w http.ResponseWriter, r *http.Request) {
+func (c Connection) CustomersOut(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	Customer, err := db.Connection.GetCustomers(connect)
 	if err != nil {
@@ -145,9 +143,9 @@ func (h Handlers) CustomersOut(w http.ResponseWriter, r *http.Request) {
 	w.Write(getC)
 }
 
-func (h Handlers) ProductIn(w http.ResponseWriter, r *http.Request) {
+func (c Connection) ProductIn(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -170,9 +168,9 @@ func (h Handlers) ProductIn(w http.ResponseWriter, r *http.Request) {
 	db.Connection.CreateProduct(connect, InputProduct)
 }
 
-func (h Handlers) ProductsOut(w http.ResponseWriter, r *http.Request) {
+func (c Connection) ProductsOut(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	Product, err := db.Connection.GetProducts(connect)
 	if err != nil {
@@ -200,9 +198,9 @@ func (h Handlers) ProductsOut(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h Handlers) OrderIn(w http.ResponseWriter, r *http.Request) {
+func (c Connection) OrderIn(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -224,9 +222,9 @@ func (h Handlers) OrderIn(w http.ResponseWriter, r *http.Request) {
 	db.Connection.CreateOrder(connect, InputOrder)
 }
 
-func (h Handlers) OrdersOut(w http.ResponseWriter, r *http.Request) {
+func (c Connection) OrdersOut(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	Order, err := db.Connection.GetOrders(connect)
 	if err != nil {
@@ -251,9 +249,9 @@ func (h Handlers) OrdersOut(w http.ResponseWriter, r *http.Request) {
 	w.Write(getO)
 }
 
-func (h Handlers) OrderDataIn(w http.ResponseWriter, r *http.Request) {
+func (c Connection) OrderDataIn(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -278,9 +276,9 @@ func (h Handlers) OrderDataIn(w http.ResponseWriter, r *http.Request) {
 	db.Connection.CreateOrderData(connect, InputOrderData)
 }
 
-func (h Handlers) OrdersDataOut(w http.ResponseWriter, r *http.Request) {
+func (c Connection) OrdersDataOut(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
 	}
 	OrderData, err := db.Connection.GetOrdersData(connect)
 	if err != nil {
@@ -307,19 +305,36 @@ func (h Handlers) OrdersDataOut(w http.ResponseWriter, r *http.Request) {
 	w.Write(getOD)
 }
 
-func (h Handlers) OrderByIDOut(w http.ResponseWriter, r *http.Request) {
+func (c Connection) OrderByIDOut(w http.ResponseWriter, r *http.Request) {
 	connect := db.Connection{
-		DB: h.DB,
+		DB: c.DB,
+	}
+	var ID, defaultCode int
+	p := strings.Split(r.URL.Path, "/")
+	if len(p) == 1 {
+		fmt.Println(defaultCode, p[0])
+	} else if len(p) > 1 {
+		code, err := strconv.Atoi(p[0])
+		if err == nil {
+			ID, err = strconv.Atoi(p[1])
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(code, p[1])
+		} else {
+			fmt.Println(defaultCode, p[1])
+		}
+	} else {
+		fmt.Println(defaultCode, "")
 	}
 
-	var ID int
+	getOrderData := []OrdersData{}
 	OrderData, err := db.Connection.GetOrderDataByID(connect, ID)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	getOrderData := []OrdersData{}
 	for _, g := range OrderData {
 		getOD := OrdersData{
 			OrderID:   g.OrderID,

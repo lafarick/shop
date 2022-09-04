@@ -11,10 +11,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	handlers := server.Handlers{
+
+	connect := server.Connection{
 		DB: database,
 	}
-	go server.ServerMain(handlers)
+	go server.ServerMain(connect)
 
 	/*err = db.CreateTableSellers(database)
 	if err != nil {
